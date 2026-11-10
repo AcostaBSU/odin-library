@@ -34,18 +34,51 @@ for (const book of library) {
   console.log(book.getInfo());
 }
 
+function addRemoveButton(book) {
+  const button = document.createElement("button");
+  button.setAttribute("id", book.id);
+  button.textContent = "Remove";
+
+  button.addEventListener("click", (event) => {
+    const parent = event.target.parentElement;
+
+    table.removeChild(parent);
+  });
+
+  return button;
+}
+
+function addToggleReadButton(book) {
+  const button = document.createElement("button");
+
+  if (book.read === "Not yet read") {
+    button.textContent = "Have read";
+  }
+  else {
+    button.textContent = "Haven't read";
+  }
+
+  button.addEventListener("click", (event) => {
+    const parent = event.target.parentElement;
+    const tdRead = parent.querySelector(".read");
+
+    if (tdRead.textContent === "Not yet read") {
+      tdRead.textContent = "Read";
+      event.target.textContent = "Haven't read";
+    }
+    else {
+      tdRead.textContent = "Not yet read";
+      event.target.textContent = "Have read";
+    }
+  });
+
+  return button;
+}
+
 const table = document.querySelector("table");
 
 for (const book of library) {
-  const tr = document.createElement("tr");
-  for (const detail in book) {
-    if (book.hasOwnProperty(detail)) {
-      const td = document.createElement("td");
-      td.textContent = book[detail];
-      tr.append(td);
-    }
-  }
-  table.append(tr);
+  addBookToTable(book);
 }
 
 function addBookToTable(book) {
@@ -53,12 +86,17 @@ function addBookToTable(book) {
   for (const detail in book) {
     if (book.hasOwnProperty(detail)) {
       const td = document.createElement("td");
+      td.setAttribute("class", detail);
       td.textContent = book[detail];
       tr.append(td);
     }
   }
+  tr.append(addRemoveButton(book));
+  tr.append(addToggleReadButton(book));
   table.append(tr);
 }
+
+
 
 const body = document.querySelector("body");
 const newBookButton = document.querySelector("#new-book");
